@@ -9,6 +9,15 @@ for signature = 1:300
         
         if eq(exist(genuine),2)
             I=imread(genuine);
+            figure(1);
+            [C,H] = imcontour(I)
+            contornos = ones(size(I,1), size(I,2));
+            for i = 2:2:size(C,2)
+                contornos(int16(C(2,i)),int16(C(1,i))) = 0;
+            end
+            figure(2);
+            imshow(contornos);
+            pause
         else
             fprintf('Fichero de assinatura genuina %g nao encontrado\n',sample)
         end
