@@ -1,4 +1,4 @@
-path='Projecto_TRP/firmasGPDS960bw300/';
+path='toolbox/matlab/firmasGPDS960bw300/';
 for signature = 1:300
     fprintf('Assinatura: %g\n',signature)
     for sample = 1:30
@@ -8,6 +8,13 @@ for signature = 1:300
         forged = [path,num2str(signature,'%.3d'),'/cf-',fname,'.bmp'];
         
         if eq(exist(genuine,'file'),2)
+            image = invert_image(im2bw(imread(genuine)));
+            a = regionprops(image, 'FilledArea');
+            a.FilledArea
+            total = (size(image,1)*size(image,2))
+            area = bwarea(image);
+            area / (size(image,1)*size(image,2))
+            
             get_features(genuine);
             pause
         else
@@ -19,6 +26,7 @@ for signature = 1:300
             pause
         else
             fprintf('Fichero e assinatura falsa %g nao encontrado\n',sample)
-        end  
+        end 
+        pause
     end 
 end
