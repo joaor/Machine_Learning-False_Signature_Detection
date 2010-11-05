@@ -1,5 +1,6 @@
 function result = six_fold_feat(img)
     width = round(size(img,2)/3);
+    result = zeros(1,6);
     pos = 1;
     for i = 0 : 2
         aux = width*i;
