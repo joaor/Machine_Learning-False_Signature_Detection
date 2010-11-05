@@ -8,13 +8,6 @@ for signature = 1:300
         forged = [path,num2str(signature,'%.3d'),'/cf-',fname,'.bmp'];
         
         if eq(exist(genuine,'file'),2)
-            image = invert_image(im2bw(imread(genuine)));
-            a = regionprops(image, 'FilledArea');
-            a.FilledArea
-            total = (size(image,1)*size(image,2))
-            area = bwarea(image);
-            area / (size(image,1)*size(image,2))
-            
             get_features(genuine);
             pause
         else
