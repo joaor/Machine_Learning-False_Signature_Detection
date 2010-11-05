@@ -1,7 +1,7 @@
 function crop = crop_image(image, line_col, direction)
     %direction = 0:(normal) || 1:(invert) & line_col = 1:(line) || 2:(col)
     
-    s = size(image, line_col)
+    s = size(image, line_col);
     dir = ((s-1)*direction);
     crop = image;
 

@@ -1,4 +1,4 @@
-path='toolbox/matlab/firmasGPDS960bw300/';
+path='Projecto_TRP/firmasGPDS960bw300/';
 for signature = 1:300
     fprintf('Assinatura: %g\n',signature)
     for sample = 1:30
@@ -9,17 +9,16 @@ for signature = 1:300
         
         if eq(exist(genuine,'file'),2)
             get_features(genuine);
-            pause
+            %pause
         else
             fprintf('Fichero de assinatura genuina %g nao encontrado\n',sample)
         end
         
         if eq(exist(forged,'file'),2)
-            get_features(genuine);
-            pause
+            get_features(forged);
+            %pause
         else
             fprintf('Fichero e assinatura falsa %g nao encontrado\n',sample)
         end 
-        pause
     end 
 end
