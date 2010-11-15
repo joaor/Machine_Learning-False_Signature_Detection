@@ -38,7 +38,7 @@ end
 
 function count = pattern_recognition(matrix, line, col)
     count = 0;
-    neighbours = [-1 0; -1 1; 0 1; 1,1; 1 0];
+    neighbours = [-1 0; -1 1; 0 1; 1 1; 1 0];
     for i = 1:-2:-1
         for j = 1:size(neighbours,1)-1
             x1 = i*neighbours(j,1);    y1 = i*neighbours(j,2);
