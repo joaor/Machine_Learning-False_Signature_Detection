@@ -4,11 +4,13 @@
 % left diagonal -> 5
 
 
-function modified_direction_feature(matrix)
+function [l,d] = modified_direction_feature(matrix)
     start_point = get_starting_point(matrix);
     matrix( start_point(1), start_point(2) ) = -1;
     
-    matrix = set_label(matrix, start_point, start_point, init_direction(),[])
+    matrix = set_label(matrix, start_point, start_point, init_direction(),[]);
+    
+    [l,d] = analyze_matrix_transitions(matrix);
 
 end
 
@@ -28,7 +30,7 @@ function [Locations, Directions] = analyze_matrix_transitions(matrix)
     for i = 1:size(matrix,2)
         col = matrix(:,i); 
         
-        [lt1,lt2,dt1,dt2] = analyze_lines(row);
+        [lt1,lt2,dt1,dt2] = analyze_lines(col);
         Locations.up_to_down = [Locations.up_to_down;lt1];
         Locations.down_to_up = [Locations.down_to_up;lt2];
         Directions.up_to_down = [Directions.up_to_down;dt1];
@@ -78,7 +80,7 @@ end
 
 
 function lt = get_location_transitions(transitions, line_length)
-    lt = zeros(1,3)
+    lt = zeros(1,3);
     for i = 1:min(size(transitions,1),3)
         lt(i) = 1 - (transitions(i,1) / line_length);
     end
@@ -86,7 +88,7 @@ end
 
 
 function dt = get_direction_transitions(transitions)
-    dt = zeros(1,3)
+    dt = zeros(1,3);
     for i = 1:min(size(transitions,1),3)
         dt(i) = transitions(i,2) / 10;
     end
@@ -94,8 +96,6 @@ end
 
 
 function matrix = set_label(matrix, point, prev_point, prev_dir, segment)
-    matrix
-    pause;
     segment = [segment;point];
         
     neighbours = get_neighbours(matrix, point, prev_point);
@@ -245,10 +245,3 @@ function prev_dir = update_previous_direction(prev_dir, next_dir)
 end
 
 
-function label_line_segment(segment, matrix)
-    matrix( segment(1,1), segment(1,2) ) = 9;
-    
-    for i = 2:size(segment,2)
-       %TODO percorrer segment e atribuir valores 
-    end
-end
