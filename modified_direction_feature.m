@@ -96,12 +96,14 @@ end
 
 
 function matrix = set_label(matrix, point, prev_point, prev_dir, segment)
+    matrix
+    pause;
     segment = [segment;point];
         
     neighbours = get_neighbours(matrix, point, prev_point);
     n_neighbours = size(neighbours,1);
     for i = 1:n_neighbours
-       matrix(neighbours(i,1), neighbours(i,2)) = -1; 
+       matrix(neighbours(i,1), neighbours(i,2)) = 9; 
     end
         
     segment_change = false;
@@ -145,7 +147,7 @@ function matrix = normalize(matrix, segment)
     end
     
     if size(segment,1) == 1
-       matrix(segment(1,1),segment(1,2)) = 0;
+        matrix(segment(1,1),segment(1,2)) = 9;
     else
         matrix(segment(1,1),segment(1,2)) = max+1;
     end
