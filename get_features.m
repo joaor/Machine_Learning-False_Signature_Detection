@@ -8,7 +8,7 @@ function len = get_features(img)
     %sixfold_surface_feature = six_fold_feat(crop_image);
     %thinned = thinning_process(crop_image);
     %[lt,dt] = modified_direction_feature(thinned);
-    best_fit(crop_image);
+    best_fit_feature = best_fit(crop_image)
     len = calc_length(crop_image);
     pause
 end

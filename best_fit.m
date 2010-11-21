@@ -1,9 +1,7 @@
-function best_fit(img)
-    figure(1);
-    imshow(img)
-    figure(2);
-    hold on 
+function result = best_fit(img)
     columns = size(img,2);
+    result = zeros(1,3);
+    area = zeros(1,2);
     for j = 1:2
         if j==1
             image = img;
@@ -28,16 +26,18 @@ function best_fit(img)
             maxX = size(image,1) - maxX;
         end
         
-        m = get_scope([minY,maxY],[minX,maxX])
-        b = mean([minX,maxX]) - (m * mean([minY,maxY]))
+        m = get_scope([minY,maxY],[minX,maxX]);
+        b = mean([minX,maxX]) - (m * mean([minY,maxY]));
         
-        x = 1:columns;
+        x = 0:columns;
         y = m * x + b;
         plot(x,y)
+        
+        result(j) = rad2deg(atan(m));
+        f = [num2str(m),'*x+',num2str(b)];
+        area(j) = quad(f,0,columns);
     end
-    
-    hold off
-    pause
+    result(3) = abs(area(1)-area(2));
 end
 
 function scope = get_scope(x,y)
