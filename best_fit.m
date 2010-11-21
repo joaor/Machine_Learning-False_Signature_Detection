@@ -29,9 +29,9 @@ function result = best_fit(img)
         m = get_scope([minY,maxY],[minX,maxX]);
         b = mean([minX,maxX]) - (m * mean([minY,maxY]));
         
-        x = 0:columns;
-        y = m * x + b;
-        plot(x,y)
+        %x = 0:columns;
+        %y = m * x + b;
+        %plot(x,y)
         
         result(j) = rad2deg(atan(m));
         f = [num2str(m),'*x+',num2str(b)];
