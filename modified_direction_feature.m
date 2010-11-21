@@ -5,10 +5,7 @@
 
 
 function [l,d] = modified_direction_feature(matrix)
-    start_point = get_starting_point(matrix);
-    matrix( start_point(1), start_point(2) ) = -1;
-    
-    matrix = set_label(matrix, start_point, start_point, init_direction(),[]);
+    matrix = set_label(matrix)
     
     [l,d] = analyze_matrix_transitions(matrix);
 
@@ -95,68 +92,97 @@ function dt = get_direction_transitions(transitions)
 end
 
 
-function matrix = set_label(matrix, point, prev_point, prev_dir, segment)
-    matrix
-    pause;
-    segment = [segment;point];
+function matrix = set_label(matrix)  
+    start_point = get_starting_point(matrix);
+    matrix(start_point.row, start_point.column) = -1;
+	
+    segments = [struct('segment', [start_point])];
+   	queue = [start_point];
+	
+	while length(queue)
+        matrix
+        pause;
+		point = queue(1);
+		queue(1) = [];
+		
+		neighbours = get_neighbours(matrix, point);
+		for i = 1 : length(neighbours)
+			matrix( neighbours(i).row, neighbours(i).column ) = 9;
+		end
         
-    neighbours = get_neighbours(matrix, point, prev_point);
-    n_neighbours = size(neighbours,1);
-    for i = 1:n_neighbours
-       matrix(neighbours(i,1), neighbours(i,2)) = 9; 
-    end
-        
-    segment_change = false;
-    for i = 1:n_neighbours
-        next_point = [neighbours(i,1) neighbours(i,2)];
-        
-        next_dir = init_direction();
-        next_dir.direction = get_direction(point, next_point);
-        
-        if n_neighbours > 1
-            if is_new_segment(point, prev_dir, next_dir) || segment_change
-                matrix = normalize(matrix, segment);
-                matrix = set_label(matrix, next_point, next_point, init_direction(),[]);
-                continue;
-            else
-                segment_change = true;
-            end
+		if length(neighbours) == 1 
+			neighbours(1).previous_dir = update_direction( point.previous_dir, get_direction(point, neighbours(1)));
+			matrix( neighbours(1).row, neighbours(1).column ) = neighbours(1).previous_dir.direction;
+	
+			queue = [neighbours(1), queue];
+			segments = update_segments(segments, neighbours(1));
+            
+		elseif length(neighbours) > 1
+			change = false;
+			for i = 1 : length(neighbours)
+				neighbours(i)
+                
+				if is_new_segment(point, neighbours(i)) || change
+                    disp('new segment')
+                    
+					matrix = normalize(matrix, segments(neighbours(i).segment).segment);
+					matrix( neighbours(i).row, neighbours(i).column ) = -1;
+                    
+					segments = [segments, struct('segment', [neighbours(i)])];
+					neighbours(i).segment = length(segments);
+					queue = [queue, neighbours(i)];
+                    
+				else
+					change = true;
+                    
+                    neighbours(i).previous_dir = update_direction( point.previous_dir, get_direction(point, neighbours(i)));
+					matrix( neighbours(i).row, neighbours(i).column ) = neighbours(i).previous_dir.direction;
+					
+                    queue = [neighbours(i), queue];
+                    segments = update_segments(segments, neighbours(1));
+				end
+			end
+        else
+			if length(segments(point.segment).segment) ~= 0
+				matrix = normalize(matrix, segments(point.segment).segment);
+			end
         end
-        
-        matrix( next_point(1), next_point(2) ) = next_dir.direction;
-        matrix = set_label(matrix, next_point, point, update_previous_direction(prev_dir, next_dir), segment);
-    end
-    
-    if n_neighbours==0
-        matrix = normalize(matrix, segment);
-    end
+	end
+end
+
+function segments = update_segments(segments, point)
+    this_segment = segments(point.segment).segment;
+    this_segment = [this_segment, point];
+    segments(point.segment).segment = this_segment;
 end
 
 
 function matrix = normalize(matrix, segment)
+    disp('normalizing')
+    segment
     m = zeros(1,4);
     max = 1;
     
-    for i = 2:size(segment,1)
-        ind = matrix(segment(i,1),segment(i,2)) -1;
+    for i = 2:length(segment)
+        ind = matrix(segment(i).row, segment(i).column) -1;
         m(ind) = m(ind)+1;
         
         if m(ind) > m(max)
             max = ind;
         end
     end
-    
-    if size(segment,1) == 1
-        matrix(segment(1,1),segment(1,2)) = 9;
+    max
+    if length(segment) == 1
+        matrix(segment(1).row,segment(1).column) = 9;
     else
-        matrix(segment(1,1),segment(1,2)) = max+1;
+        matrix(segment(1).row,segment(1).column) = max+1;
     end
 end
 
 
 function dir = get_direction(point, next)
-    dif_y = point(2)-next(2);
-    dif = abs(point(1)-next(1) + dif_y);
+    dif_y = point.column - next.column;
+    dif = abs(point.row - next.row + dif_y);
 
     dir = dif +3;
     if dif == 1 && dif_y == 0
@@ -177,7 +203,7 @@ function point = get_starting_point(matrix)
         for j = 1:size(matrix,2)
             
             if matrix(i,j)
-                point = [i j];
+                point = init_point(i, j, 1);
                 return
             end
         end
@@ -185,18 +211,19 @@ function point = get_starting_point(matrix)
 end
 
 
-function neighbours = get_neighbours(matrix, point, prev_point)
+function neighbours = get_neighbours(matrix, point)
     indexes = [-1 0; -1 1; 0 1; 1 1];
     neighbours = [];
   
     for i = 1:-2:-1
         for j = 1:size(indexes,1)
-            line = point(1) + (i*indexes(j,1));
-            col = point(2) + (i*indexes(j,2));
+            line = point.row + (i*indexes(j,1));
+            col = point.column + (i*indexes(j,2));
         
             try
-                if matrix(line, col) == 1 &&( line ~= prev_point(1) || col ~=prev_point(2))
-                        neighbours = [neighbours; line, col];
+                if matrix(line, col) == 1
+                        neighbour = init_point(line, col, point.segment);
+                        neighbours = [neighbours; neighbour];
                 end
             catch exception
                 continue
@@ -206,20 +233,24 @@ function neighbours = get_neighbours(matrix, point, prev_point)
 end
 
 
-function is_new = is_new_segment(point, prev_dir, next_dir)
-    is_new = first_condition(prev_dir, point, next_dir) || second_condition(prev_dir, point, next_dir);
-    is_new = is_new || third_condition(prev_dir) || fourth_condition(prev_dir);
+function point = init_point(row, col, seg)
+    point = struct('row', row, 'column', col, 'segment', seg, 'previous_dir', struct('direction',1,'number',0,'length',0));
+end
+
+function is_new = is_new_segment(point, next_point)
+    is_new = first_condition(point.previous_dir, next_point.previous_dir) || second_condition(point.previous_dir, next_point.previous_dir);
+    is_new = is_new || third_condition(point.previous_dir) || fourth_condition(point.previous_dir);
 end
 
 
-function bool = first_condition(previous_dir, point, next_dir)
+function bool = first_condition(previous_dir, next_dir)
     prev = previous_dir.direction == 3; % down-left and up-right
     next = next_dir.direction == 5; % down-right and up-left
     bool = prev && next;
 end
 
 
-function bool = second_condition(previous_dir, point, next_dir)
+function bool = second_condition(previous_dir, next_dir)
     next = next_dir.direction == 3;
     prev = previous_dir.direction == 5;
     bool = prev && next;
@@ -236,11 +267,11 @@ function bool = fourth_condition(previous_dir)
 end
 
 
-function prev_dir = update_previous_direction(prev_dir, next_dir)
-    if prev_dir.direction == next_dir.direction
+function prev_dir = update_direction(prev_dir, next_dir)
+    if prev_dir.direction == next_dir
         prev_dir.length = prev_dir.length +1;
     else
-        prev_dir.direction = next_dir.direction;
+        prev_dir.direction = next_dir;
         prev_dir.number = prev_dir.number +1;
         prev_dir.length = 0;
     end
