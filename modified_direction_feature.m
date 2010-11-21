@@ -135,7 +135,7 @@ function matrix = set_label(matrix)
 				else
 					change = true;
                     
-                    neighbours(i).previous_dir = update_direction( point.previous_dir, get_direction(point, neighbours(1)));
+                    neighbours(i).previous_dir = update_direction( point.previous_dir, get_direction(point, neighbours(i)));
 					matrix( neighbours(i).row, neighbours(i).column ) = neighbours(i).previous_dir.direction;
 					
                     queue = [neighbours(i), queue];
