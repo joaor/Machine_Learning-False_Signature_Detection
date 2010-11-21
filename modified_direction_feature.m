@@ -5,7 +5,7 @@
 
 
 function [l,d] = modified_direction_feature(matrix)
-    matrix = set_label(matrix)
+    matrix = set_label(matrix);
     
     [l,d] = analyze_matrix_transitions(matrix);
 
@@ -100,8 +100,6 @@ function matrix = set_label(matrix)
    	queue = [start_point];
 	
 	while length(queue)
-        matrix
-        pause;
 		point = queue(1);
 		queue(1) = [];
 		
@@ -158,8 +156,6 @@ end
 
 
 function matrix = normalize(matrix, segment)
-    disp('normalizing')
-    segment
     m = zeros(1,4);
     max = 1;
     
@@ -171,7 +167,6 @@ function matrix = normalize(matrix, segment)
             max = ind;
         end
     end
-    max
     if length(segment) == 1
         matrix(segment(1).row,segment(1).column) = 9;
     else
@@ -189,14 +184,6 @@ function dir = get_direction(point, next)
         dir = 2;
     end
 end
-
-
-function dir = init_direction()
-    dir.direction = 1; %no direction
-    dir.number = 0;
-    dir.length = 0;
-end 
-
 
 function point = get_starting_point(matrix)
     for i = size(matrix,1):-1:1

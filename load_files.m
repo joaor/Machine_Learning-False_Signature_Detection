@@ -35,6 +35,4 @@ for signature = 1:300
         new_curr = curr_len(pos) - min_len;
         length_feature = new_curr/new_max;
     end
-
-    %pause
 end
