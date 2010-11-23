@@ -1,4 +1,4 @@
-path='Projecto_TRP/firmasGPDS960bw300/';
+path='firmasGPDS960bw300/';
 for signature = 1:300
     
     fprintf('Assinatura: %g\n',signature)

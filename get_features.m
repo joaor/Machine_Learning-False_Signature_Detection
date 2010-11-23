@@ -3,7 +3,6 @@ function len = get_features(img)
     im = imread(img);
     image = invert_image(im2bw(im));
     crop_image = surface_image(image);
-    imshow(crop_image)
     
     thinned = thinning_process(crop_image);
     [lt,dt] = modified_direction_feature(thinned);
