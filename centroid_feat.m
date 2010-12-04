@@ -10,3 +10,4 @@ function feat = centroid_feat(img)
     alfa = atan(op/adj);
     feat = alfa/pi + 0.5;
 end
+

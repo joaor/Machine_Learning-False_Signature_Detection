@@ -8,7 +8,20 @@ function [l,d] = modified_direction_feature(matrix)
     matrix = set_label(matrix);
     
     [l,d] = analyze_matrix_transitions(matrix);
+    
+    
+    keys = fieldnames(l);
+    for i = 1: numel(keys)
+        field = char(keys(i));
+        l = update_field(l, field);
+        d = update_field(d, field);
+    end
+        
+end
 
+function xtruct = update_field(xtruct, field)
+    value = getfield(l, field);
+    xtruct = setfield(xtruct, field, average_lines(value));
 end
 
 
@@ -118,11 +131,8 @@ function matrix = set_label(matrix)
 		elseif length(neighbours) > 1
 			change = false;
 			for i = 1 : length(neighbours)
-				neighbours(i)
                 
 				if is_new_segment(point, neighbours(i)) || change
-                    disp('new segment')
-                    
 					matrix = normalize(matrix, segments(neighbours(i).segment).segment);
 					matrix( neighbours(i).row, neighbours(i).column ) = -1;
                     
@@ -137,7 +147,7 @@ function matrix = set_label(matrix)
 					matrix( neighbours(i).row, neighbours(i).column ) = neighbours(i).previous_dir.direction;
 					
                     queue = [neighbours(i), queue];
-                    segments = update_segments(segments, neighbours(1));
+                    segments = update_segments(segments, neighbours(i));
 				end
 			end
         else
@@ -158,11 +168,13 @@ end
 function matrix = normalize(matrix, segment)
     m = zeros(1,4);
     max = 1;
-    
+
     for i = 2:length(segment)
         ind = matrix(segment(i).row, segment(i).column) -1;
+        %segment(i)
+        %matrix(segment(i).row, segment(i).column)
         m(ind) = m(ind)+1;
-        
+
         if m(ind) > m(max)
             max = ind;
         end

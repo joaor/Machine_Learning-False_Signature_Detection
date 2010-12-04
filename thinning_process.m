@@ -1,32 +1,35 @@
 function thinned = thinning_process(matrix)
-    count = 1;
-    first_condition = 0;
-    thinned = matrix;
+    thinned = bwmorph(matrix,'skel',10);
+    thinned = int16(thinned);
     
-    while count > 0
-        count = 0;
-        first_condition = mod(first_condition+1,2);
-        boundaries = zeros(size(thinned));
-
-        for line = 1:size(thinned,1)
-            for col = 1:size(thinned,2)
-
-                if thinned(line,col) == 1
-                    if main_thinning_condition(thinned, line, col)
-                        if first_condition
-                            boundaries(line,col) = first_subcondition(thinned, line, col);
-                            count = count + 1;
-                        else
-                            boundaries(line,col) = second_subcondition(thinned, line, col);
-                            count = count + 1;
-                        end
-                    end
-                end
-
-            end
-        end
-        thinned = thinned - boundaries;
-    end
+%     count = 1;
+%     first_condition = 0;
+%     thinned = matrix;
+%     
+%     while count > 0
+%         count = 0;
+%         first_condition = mod(first_condition+1,2);
+%         boundaries = zeros(size(thinned));
+% 
+%         for line = 1:size(thinned,1)
+%             for col = 1:size(thinned,2)
+% 
+%                 if thinned(line,col) == 1
+%                     if main_thinning_condition(thinned, line, col)
+%                         if first_condition
+%                             boundaries(line,col) = first_subcondition(thinned, line, col);
+%                             count = count + 1;
+%                         else
+%                             boundaries(line,col) = second_subcondition(thinned, line, col);
+%                             count = count + 1;
+%                         end
+%                     end
+%                 end
+% 
+%             end
+%         end
+%         thinned = thinned - boundaries;
+%     end
 end
 
 
