@@ -26,7 +26,7 @@ end
 function vector = push_struct(vector, feature)
     keys = fieldnames(feature);
     for i = 1: numel(keys)
-        value = getfield(feature, char(keys(i)));
+        value = feature.(char(keys(i)));
         value = reshape(value, 1, numel(value));
         
         vector = [vector, value];

@@ -3,7 +3,7 @@ for signature = 1:300
     
     fprintf('Assinatura: %g\n',signature)
     genuine_features = [];
-    forged_featured = [];
+    forged_features = [];
     
     for sample = 1:30
         fname = [num2str(signature,'%.3d'),'-',num2str(sample,'%.2d')];
@@ -23,6 +23,11 @@ for signature = 1:300
             fprintf('Fichero e assinatura falsa %g nao encontrado\n',sample)
         end 
     end 
-    length_feature(genuine_features, forged_features);
+    [genuine_features(:,1), forged_features(:,1)] = length_feature(genuine_features(:,1), forged_features(:,1));
+    
+    
+    
+    struct('X','name','y','dim','num_data');
+    
 end
 
