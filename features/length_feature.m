@@ -1,12 +1,9 @@
-function [genuine, forged] = length_feature(genuine, forged)
-    lens = [genuine; forged]
-
-    max_len = max(lens);
-    min_len = min(lens);
+function data = length_feature(data)
+    max_len = max(data);
+    min_len = min(data);
     new_max = max_len - min_len;
 
-    genuine = update_length(genuine, min_len, new_max);
-    forged = update_length(forged, min_len, new_max);
+    data = update_length(data, min_len, new_max);
 end
 
 function feature = update_length(feature, min_len, new_max)

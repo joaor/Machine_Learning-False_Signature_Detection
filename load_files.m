@@ -1,33 +1,39 @@
 path='/home/diogo/Workspace/Projecto-TRP/firmasGPDS960bw300/';
-for signature = 1:300
-    
+from = 1;
+to = 300;
+
+for signature = from:to
     fprintf('Assinatura: %g\n',signature)
-    genuine_features = [];
-    forged_features = [];
+    all_features = [];
     
+    tic
     for sample = 1:30
-        fname = [num2str(signature,'%.3d'),'-',num2str(sample,'%.2d')];
+        fprintf('sample: %g\n',sample)
         
-        genuine = [path,num2str(signature,'%.3d'),'/c-',fname,'.bmp'];
-        forged = [path,num2str(signature,'%.3d'),'/cf-',fname,'.bmp'];
+        fname = [num2str(signature,'%.3d'), '-', num2str(sample,'%.2d')];
+        genuine = [path, num2str(signature,'%.3d'), '/c-', fname, '.bmp'];
+        forged = [path, num2str(signature,'%.3d'), '/cf-', fname, '.bmp'];
         
-        if eq(exist(genuine,'file'),2)
-            genuine_features = [genuine_features; get_features(genuine)];
+        if eq( exist(genuine,'file'), 2 )
+            all_features = [all_features; signature get_features(genuine) 1];
         else
             fprintf('Fichero de assinatura genuina %g nao encontrado\n',sample)
         end
         
-        if eq(exist(forged,'file'),2)
-            forged_features = [forged_features; get_features(forged)]; 
+        if eq( exist(forged,'file'), 2 )
+            all_features = [all_features; signature get_features(forged) 2]; 
         else
             fprintf('Fichero e assinatura falsa %g nao encontrado\n',sample)
         end 
     end 
-    [genuine_features(:,1), forged_features(:,1)] = length_feature(genuine_features(:,1), forged_features(:,1));
     
-    
-    
-    struct('X','name','y','dim','num_data');
-    
+    [all_features(:,2)] = length_feature( all_features(:,2) );
+
+    %struct('X', features, 'y', classes, 'num_data', length(features), 'dim', size(features,1));    
 end
+
+fname = sprintf('all_features_%d_%d.mat', from, to);
+save(fname, 'all_features');
+
+toc
 

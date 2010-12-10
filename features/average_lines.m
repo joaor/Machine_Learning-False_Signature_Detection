@@ -1,16 +1,26 @@
-function r = average_lines( matrix, ratio )
-    lines = size(matrix,1);
+function r = average_lines( matrix, dim )
+    len = size(matrix,1); 
+    rat = floor(len/dim);
+    rest = mod(len,dim);
+    
     r=[];
-    for i = 1:ratio:lines-ratio+1; 
-        if i+ratio > lines-ratio+1
-            m = mean(matrix(i:lines,:)); 
+    for i = 1 : dim
+        if rest
+            ratio = rat + 1;
+            rest = rest - 1;
         else
-            m = mean(matrix(i:i+ratio-1,:));
-        end      
+            ratio = rat;
+        end
+        
+        if ratio == 1
+            m = matrix(i,:);
+        else
+            m = mean( matrix(i:i+ratio-1,:) );
+        end  
+
+        i = i + ratio;
         r = [r;m];
     end
 end
-
-
 
 
