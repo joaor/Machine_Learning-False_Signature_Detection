@@ -12,8 +12,8 @@ function [l,d] = modified_direction_feature(matrix)
     keys = fieldnames(l);
     for i = 1: numel(keys)
         field = char(keys(i));
-        l.(field) = average_lines( l.(field), 5)
-        d.(field) = average_lines( d.(field), 5)
+        l.(field) = average_lines( l.(field), 5);
+        d.(field) = average_lines( d.(field), 5);
     end      
 end
 

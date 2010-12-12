@@ -1,12 +1,13 @@
+tic
+
 path='/home/diogo/Workspace/Projecto-TRP/firmasGPDS960bw300/';
 from = 1;
 to = 300;
 
+all_features = []
 for signature = from:to
     fprintf('Assinatura: %g\n',signature)
-    all_features = [];
     
-    tic
     for sample = 1:30
         fprintf('sample: %g\n',sample)
         
@@ -28,12 +29,11 @@ for signature = from:to
     end 
     
     [all_features(:,2)] = length_feature( all_features(:,2) );
-
-    %struct('X', features, 'y', classes, 'num_data', length(features), 'dim', size(features,1));    
 end
 
 fname = sprintf('all_features_%d_%d.mat', from, to);
 save(fname, 'all_features');
 
-toc
+toc 
+%Elapsed time is 14788.321115 seconds.
 
