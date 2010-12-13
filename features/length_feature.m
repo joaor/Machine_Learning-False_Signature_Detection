@@ -7,8 +7,8 @@ function data = length_feature(data)
 end
 
 function feature = update_length(feature, min_len, new_max)
-    for pos = 1:size(feature,1)
-        new_curr = feature(pos, 1) - min_len;
-        feature(pos, 1) = new_curr/new_max;
+    for pos = 1:length(feature)
+        new_curr = feature(pos) - min_len;
+        feature(pos) = new_curr/new_max;
     end
 end

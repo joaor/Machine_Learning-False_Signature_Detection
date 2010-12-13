@@ -1,48 +1,55 @@
 function result = best_fit(img)
-    columns = size(img,2);
-    result = zeros(1,3);
-    area = zeros(1,2);
-    for j = 1:2
+    columns = size(img, 2);
+    rows = size(img, 1);
+    
+    result = zeros(1, 3);
+    area = zeros(1, 2);
+    
+    for j = 1:2  
         if j==1
             image = img;
         else
-            image = img(size(img,1):-1:1,:);
+            image = img( size(img,1): -1 : 1, : );
         end
+        
         contour = zeros(1,columns);
         for i = 1 : columns
             try
-                foregrounds = find(image(:,i) == 1 );
-                contour(i) = foregrounds(1);
+                contour(i) = rows - find(image(:,i) == 1, 1);
             catch exception
                 continue;
             end
         end
 
-        [minX,minY] = find_peaks(contour);
-        [maxX,maxY] = find_peaks(contour*(-1));
-        maxX = maxX * (-1);
+%         [minX,minY] = find_peaks(contour);
+%         [maxX,maxY] = find_peaks(contour * (-1));
+%         maxX = maxX * (-1);
+%         
+%         if j == 2
+%             maxX = size(image,1) - maxX;
+%         end
+
+        X = 1:columns;
+        scope = get_scope(X,contour);
+        b = mean(contour) - (scope * mean(X));
+
+        result(j) = atan(scope) / pi + 0.5 ;
         
-        if j == 2
-            maxX = size(image,1) - maxX;
-        end
-        
-        m = get_scope([minY,maxY],[minX,maxX]);
-        b = mean([minX,maxX]) - (m * mean([minY,maxY]));
-        
-        %x = 0:columns;
-        %y = m * x + b;
-        %plot(x,y)
-        
-        result(j) = rad2deg(atan(m));
-        f = [num2str(m),'*x+',num2str(b)];
-        area(j) = quad(f,0,columns);
+        f = [num2str(scope), '*x+', num2str(b)];
+        area(j) = quad(f, 0, columns);
     end
-    result(3) = abs(area(1)-area(2));
+    
+    result(3) = abs(area(1) - area(2)) / (rows*columns);
 end
 
-function scope = get_scope(x,y)
-    len = length(x)+length(y);
-    scope = (sum_sets(x,y) - fmean(x, y, len)) / (sum_square(x) - sum(x)^2/len);
+
+function scope = get_scope(x, y)
+     %n = length(X);
+     %scope = (sum(X .* Y) - (sum(X) * sum(Y)) / n) / ( sum(X .* X) - (sum(X) ^ 2) / n );
+     %b = (sum(Y) - scope * sum(X)) / n;
+
+     len = length(x);
+     scope = (sum_sets(x, y) - fmean(x, y, len)) / (sum_square(x) - sum(x)^2 / len);
 end
 
 function result = sum_sets(x,y)

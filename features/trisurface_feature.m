@@ -4,12 +4,11 @@ function result = trisurface_feature(image)
     for i = 0 : 2
         aux = width*i;
         if i ==2
-           image_part = image(:, (aux + 1):size(image,2));
+           image_part = image(:, (aux + 1) : size(image,2));
         else
-           image_part = image(:, (aux + 1):width+(aux));
+           image_part = image(:, (aux + 1) : width + aux);
         end
-        total_area = size(image_part,1) * size(image_part,2);
-        foreground_area = bwarea(image_part);
-        result(i+1) = foreground_area/total_area;
+        
+        result(i+1) = get_area(image_part);
     end
 end
