@@ -4,6 +4,6 @@ function set = build_set(data, indexes)
 end
 
 function xtruct = build_struct(feat)
-    xtruct = struct('X', feat(1:end-1,:), 'y', feat(end,:), 'num_data', size(feat,2), 'dim', size(feat,1)-1);
+    xtruct = struct('X', feat(1:size(feat,1)-1,:), 'y', feat(size(feat,1),:), 'num_data', size(feat,2), 'dim', size(feat,1)-1);
 end
 

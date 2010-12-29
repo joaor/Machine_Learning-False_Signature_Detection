@@ -5,17 +5,22 @@ function result = best_fit(img)
     result = zeros(1, 3);
     area = zeros(1, 2);
     
-    for j = 1:2  
-        if j==1
-            image = img;
-        else
-            image = img( size(img,1): -1 : 1, : );
-        end
+    for j = 1:2 
+        image = img;
+%         if j==1
+%             image = img;
+%         else
+%             image = img( size(img,1): -1 : 1, : );
+%         end
         
         contour = zeros(1,columns);
         for i = 1 : columns
             try
-                contour(i) = rows - find(image(:,i) == 1, 1);
+                if j==1
+                    contour(i) = rows+1 - find(image(:,i) == 1, 1);
+                else
+                    contour(i) = rows+1 - find(image(:,i) == 1, 1, 'last');
+                end
             catch exception
                 continue;
             end

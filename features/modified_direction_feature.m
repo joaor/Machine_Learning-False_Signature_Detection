@@ -25,19 +25,19 @@ function [Locations, Directions] = analyze_matrix_transitions(matrix)
         row = matrix(i,:);
         
         [lt1,lt2,dt1,dt2] = analyze_lines(row);
-        Locations.left_to_right = [Locations.left_to_right;lt1];
-        Locations.right_to_left = [Locations.right_to_left;lt2];
-        Directions.left_to_right = [Directions.left_to_right;dt1];
-        Directions.right_to_left = [Directions.right_to_left;dt2];
+        Locations.left_to_right = [Locations.left_to_right; lt1];
+        Locations.right_to_left = [Locations.right_to_left; lt2];
+        Directions.left_to_right = [Directions.left_to_right; dt1];
+        Directions.right_to_left = [Directions.right_to_left; dt2];
     end 
     for i = 1:size(matrix,2)
         col = matrix(:,i); 
         
         [lt1,lt2,dt1,dt2] = analyze_lines(col);
-        Locations.up_to_down = [Locations.up_to_down;lt1];
-        Locations.down_to_up = [Locations.down_to_up;lt2];
-        Directions.up_to_down = [Directions.up_to_down;dt1];
-        Directions.down_to_up = [Directions.down_to_up;dt2];
+        Locations.up_to_down = [Locations.up_to_down; lt1];
+        Locations.down_to_up = [Locations.down_to_up; lt2];
+        Directions.up_to_down = [Directions.up_to_down; dt1];
+        Directions.down_to_up = [Directions.down_to_up; dt2];
     end
 end
 
@@ -49,11 +49,11 @@ function [lt1,lt2,dt1,dt2] = analyze_lines(line)
     %left-to-right || up-to-down
     p1 = get_transition_points( line );
     lt1 = get_location_transitions(p1, len);
-    lt2 = get_direction_transitions(p1);
+    dt1 = get_direction_transitions(p1);
     
     %right-to-left || down-to-up
     p2 = get_transition_points( line(len:-1:1) );
-    dt1 = get_location_transitions(p2, len);
+    lt2 = get_location_transitions(p2, len);
     dt2 = get_direction_transitions(p2);
 end
 
@@ -85,6 +85,8 @@ function matrix = set_label(matrix)
 			change = false;
 			for i = 1 : length(neighbours)
                 
+                neighbours(i).previous_dir.direction = get_direction(point, neighbours(i));
+                
 				if is_new_segment(point, neighbours(i)) || change
 					matrix = normalize(matrix, segments(neighbours(i).segment).segment);
 					matrix( neighbours(i).row, neighbours(i).column ) = -1;
@@ -96,8 +98,9 @@ function matrix = set_label(matrix)
 				else
 					change = true;
                     
-                    neighbours(i).previous_dir = update_direction( point.previous_dir, get_direction(point, neighbours(i)));
-					matrix( neighbours(i).row, neighbours(i).column ) = neighbours(i).previous_dir.direction;
+                    %neighbours(i).previous_dir = update_direction( point.previous_dir, get_direction(point, neighbours(i)));
+					neighbours(i).previous_dir = update_direction( point.previous_dir, neighbours(i).previous_dir.direction);
+                    matrix( neighbours(i).row, neighbours(i).column ) = neighbours(i).previous_dir.direction;
 					
                     queue = [neighbours(i), queue];
                     segments = update_segments(segments, neighbours(i));

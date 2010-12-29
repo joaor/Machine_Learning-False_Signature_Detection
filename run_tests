@@ -1,0 +1,33 @@
+fields = ['length', 'sixfold', 'trisurface', 'bestfit', 'centroid', 'mdf'];%fieldnames( data(1) );
+fields_indexes = 1:size(fields,1);
+
+results = [];
+for i = 6 : -1 : 1
+   combinations = combntns(fields_indexes,i);
+   result = [];
+   
+   for j = 1 : size(combinations,1)
+       combination = combinations(j);
+       all_vectors = [];
+      
+       for k = 1 : size(data,1)
+           signature = data(k);
+           vector = [];
+           
+           for w = 1: size(combination,2)
+               fid = combination(w);
+               
+               value = signature.(char( fields(fid) ));
+               vector = [vector, value];
+           end
+           
+           vector = [vector, signature.class];
+           all_vectors = [all_vectors; vector];
+       end
+       
+       result.combination = combination;
+       result.results = classification(all_vectors);
+       results = [results; result];
+   end
+   
+end

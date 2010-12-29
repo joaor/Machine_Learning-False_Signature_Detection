@@ -1,28 +1,28 @@
-load 'all_features_1_300';
-data = get_first_sets(all_features, 44);
+function results = classification(data)
+    all_classifiers = dir('classifiers');
+    all_classifiers = all_classifiers(3: end);
 
-all_classifiers = dir('classifiers');
-all_classifiers = all_classifiers(3: end);
+    %all_classifiers(6:9) = [];
+    all_classifiers = all_classifiers(8);
 
-for i = 1 : length(all_classifiers)
-    file = all_classifiers(i).name(1: end-2);
-    
     results = [];
-    results = setfield(results, file, []);
-    
-    classifier = str2func( file );
+    for i = 1 : length(all_classifiers)
+        file = all_classifiers(i).name(1: end-2);
+        classifier = str2func( file )
+        
+        [training_indexes, testing_indexes] = crossval(size(data,1), 5);
 
-    [training_indexes, testing_indexes] = crossval(size(data,1), 6);
+        result = zeros(5, 3);
+        for j = 1 : 1
+            fprintf('Test Number %g\n', j)
+            training_set = build_set( data, training_indexes(j) );
+            testing_set = build_set( data, testing_indexes(j) );
 
-    for j = 1 : 6
-        training_set = build_set( data, training_indexes(j) );
-        testing_set = build_set( data, testing_indexes(j) );
-
-        result = svm_classifier(training_set, testing_set)
-        results = setfield(results, file, [getfield(results, file);result]);
+            result(j,:)  = classifier(training_set, testing_set);
+        end
+        
+        %results.(char(file)) = mean( result )
+        results.(char(file)) = result;
     end
-    pause
-
 end
-results
-pause
+
