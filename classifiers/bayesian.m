@@ -6,6 +6,6 @@ function error = bayesian(training_set, testing_set)
     model.Pclass{2} = mlcgmm( training_set.X(:, inx2) );
     model.Prior = [length(inx1) length(inx2)] / (length(inx1) + length(inx2));
     
-    ypred_testing = bayescls(testing_set.X, model);
-    error = get_error(ypred_testing, testing_set.y);
+    [ypred_testing, dfce] = bayescls(testing_set.X, model);
+    error = get_error(ypred_testing, testing_set.y, dfce);
 end
