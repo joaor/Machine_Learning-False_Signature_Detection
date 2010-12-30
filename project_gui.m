@@ -22,7 +22,7 @@ function varargout = project_gui(varargin)
 
 % Edit the above text to modify the response to help project_gui
 
-% Last Modified by GUIDE v2.5 30-Dec-2010 00:59:34
+% Last Modified by GUIDE v2.5 30-Dec-2010 02:34:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -184,8 +184,13 @@ switch get(handles.menu_classifiers,'Value')
     case 6 %SVM
         %fazes o que quiseres
     case 7 %KMeans
+        get(handles.menu_classifiers,'Value') 
         %fazes o que quiseres
     case 8 %KNN
         %fazes o que quiseres
     otherwise
 end
+set(handles.result,'String','100 %');
+set(handles.sd,'String','0 %');
+set(handles.fpositive,'String','0 %');
+set(handles.tpositive,'String','0 %');
