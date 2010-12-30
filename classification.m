@@ -3,7 +3,7 @@ function results = classification(data)
     all_classifiers = all_classifiers(3: end);
 
     %all_classifiers(6:9) = [];
-    all_classifiers = all_classifiers(8);
+    all_classifiers = all_classifiers(2);
 
     results = [];
     for i = 1 : length(all_classifiers)
@@ -20,14 +20,16 @@ function results = classification(data)
             testing_set = build_set( data, testing_indexes(j) );
 
             aux  = classifier(training_set, testing_set);
-            result.errors = [result.errors; aux];
-            result.roc = [result.roc; aux.roc];
+            result.errors = [result.errors; aux.errors];
+            result.roc = aux.roc;
               
         end
-
-        results.(char(file)).mean = mean( result.errors );
-        results.(char(file)).std = std( result.errors );
-        results.(char(file)).roc = result.roc;
+        
+        results.(char(file)).error = mean( result.errors )
+        results.(char(file)).std = std( result.errors )
+        results.(char(file)).roc = result.roc
+        results
+        results.(char(file))
         %results.(char(file)) = result;
         pause
     end
