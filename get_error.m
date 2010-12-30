@@ -3,9 +3,14 @@ function errors = get_error(predicted, real, dfce)
     fp = cerror(predicted, real, 2);
     fn = cerror(predicted, real, 1);
     
-    errors.errors = [ce fp fn];
-    errors.roc = [];
+    errors.Errors = [ce fp fn];
+    errors.FP = [];
+    errors.FN = [];
     if dfce
-        errors.roc = roc(dfce, real);
+        [errors.FP, errors.FN] = roc(dfce, real);
+        
+        %plot(errors.FP, 1-errors.FN);
+        %xlabel('False Positive Rate'); 
+        %ylabel('True Positive Rate');
     end
 end
